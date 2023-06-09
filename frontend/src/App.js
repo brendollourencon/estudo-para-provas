@@ -1,24 +1,80 @@
-import logo from './logo.svg';
-import './App.css';
+import { Route, Routes } from "react-router-dom";
+import { RequireAuth, useAuth } from "./contexts/AuthContext";
+
+import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import PageNotFound from "./pages/PageNotFound";
+import ModulesList from "./pages/admin/modules/ModulesList";
+import ModulesForm from "./pages/admin/modules/ModulesForm";
+import TagsList from "./pages/admin/tags/TagsList";
+import TagsForm from "./pages/admin/tags/TagsForm";
 
 function App() {
+  const auth = useAuth();
+
+  if (auth.loading) {
+    return <div>Carregando...</div>;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <RequireAuth>
+            <Dashboard />
+          </RequireAuth>
+        }
+      />
+
+      <Route
+        path="/modulos/lista"
+        element={
+          <RequireAuth>
+            <ModulesList />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/tags/lista"
+        element={
+          <RequireAuth>
+            <TagsList />
+          </RequireAuth>
+        }
+      />
+
+      <Route
+        path="/modulo/:id"
+        element={
+          <RequireAuth>
+            <ModulesForm />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/modulo/novo"
+        element={
+          <RequireAuth>
+            <ModulesForm />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/tag/novo"
+        element={
+          <RequireAuth>
+            <TagsForm />
+          </RequireAuth>
+        }
+      />
+
+      <Route path="/login" element={<Login />} />
+      <Route path="/cadastrar" element={<Register />} />
+      <Route path="/cadastrar" element={<Register />} />
+      <Route path="*" element={<PageNotFound />} />
+    </Routes>
   );
 }
 
