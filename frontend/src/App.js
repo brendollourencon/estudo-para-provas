@@ -9,6 +9,8 @@ import ModulesList from "./pages/admin/modules/ModulesList";
 import ModulesForm from "./pages/admin/modules/ModulesForm";
 import TagsList from "./pages/admin/tags/TagsList";
 import TagsForm from "./pages/admin/tags/TagsForm";
+import QuestionsList from "./pages/admin/questions/QuestionsList";
+import QuestionsForm from "./pages/admin/questions/QuestionsForm";
 
 function App() {
   const auth = useAuth();
@@ -29,18 +31,60 @@ function App() {
       />
 
       <Route
-        path="/modulos/lista"
-        element={
-          <RequireAuth>
-            <ModulesList />
-          </RequireAuth>
-        }
-      />
-      <Route
         path="/tags/lista"
         element={
           <RequireAuth>
             <TagsList />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/tag/novo"
+        element={
+          <RequireAuth>
+            <TagsForm />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/tag/:id"
+        element={
+          <RequireAuth>
+            <TagsForm />
+          </RequireAuth>
+        }
+      />
+
+      <Route
+        path="/perguntas/lista"
+        element={
+          <RequireAuth>
+            <QuestionsList />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/perguntas/novo"
+        element={
+          <RequireAuth>
+            <QuestionsForm />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/perguntas/:id"
+        element={
+          <RequireAuth>
+            <QuestionsForm />
+          </RequireAuth>
+        }
+      />
+
+      <Route
+        path="/modulos/lista"
+        element={
+          <RequireAuth>
+            <ModulesList />
           </RequireAuth>
         }
       />
@@ -58,14 +102,6 @@ function App() {
         element={
           <RequireAuth>
             <ModulesForm />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/tag/novo"
-        element={
-          <RequireAuth>
-            <TagsForm />
           </RequireAuth>
         }
       />

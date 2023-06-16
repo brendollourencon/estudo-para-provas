@@ -20,11 +20,15 @@ const pages = [
     link: "/tags/lista",
   },
   {
+    name: "Perguntas",
+    link: "/perguntas/lista",
+  },
+  {
     name: "Modulos",
     link: "/modulos/lista",
   },
   {
-    name: "Testes Realizados",
+    name: "Simulados Realizados",
     link: "/",
   },
 ];

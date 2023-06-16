@@ -1,82 +1,165 @@
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
-import {
-  Button,
-  Chip,
-  FormControl,
-  Grid,
-  InputLabel,
-  Select,
-  TextField,
-} from "@mui/material";
+import { Alert, Button, Grid, Snackbar, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
-import { useGetAll } from "../../../services/moduleService";
-import MenuItem from "@mui/material/MenuItem";
-import { useRegister } from "../../../services/tagService";
+import {
+  useCreate,
+  useDelete,
+  useGetById,
+  useUpdate,
+} from "../../../services/tagService";
+import { useNavigate, useParams } from "react-router-dom";
 
 function ModulesForm() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [moduleTemp, setModuleTemp] = useState("");
-  const [modules, setModules] = useState([]);
-  const [modulesSelected, setModulesSelected] = useState([]);
+  const [toast, setToast] = useState({
+    show: false,
+    type: "",
+    message: "",
+  });
 
   const {
-    status: statusGetModules,
-    response: responseGetModules,
-    error: errorGetModules,
-    request: requestGetModules,
-    loading: loadingGetModules,
-  } = useGetAll();
+    status: statusCreate,
+    error: errorCreate,
+    request: requestCreate,
+    loading: loadingCreate,
+  } = useCreate({ name, description });
 
   const {
-    status: statusRegister,
-    response: responseRegister,
-    error: errorRegisters,
-    request: requestRegister,
-    loading: loadingRegister,
-  } = useRegister({ name, description, modules: modulesSelected });
+    status: statusUpdate,
+    error: errorUpdate,
+    request: requestUpdate,
+    loading: loadingUpdate,
+  } = useUpdate({ id, name, description });
+
+  const {
+    status: statusGetById,
+    response: responseGetById,
+    error: errorGetById,
+    request: requestGetById,
+    loading: loadingGetById,
+  } = useGetById(id);
+
+  const {
+    status: statusDelete,
+    response: responseDelete,
+    error: errorDelete,
+    request: requestDelete,
+    loading: loadingDelete,
+  } = useDelete(id);
 
   useEffect(() => {
-    requestGetModules();
+    if (id) requestGetById();
   }, []);
 
   useEffect(() => {
-    if (!statusGetModules) return;
-    if (statusGetModules !== 200) return;
-    setModules(responseGetModules);
-  }, [statusGetModules]);
+    if (!statusGetById) return;
 
-  useEffect(() => {
-    if (!statusRegister) return;
-    if (statusRegister !== 201) return;
-  }, [statusRegister]);
-
-  useEffect(() => {
-    if (!moduleTemp) return;
-
-    const findInfo = modules.find((mod) => mod.id === moduleTemp);
-    const aux = modulesSelected;
-
-    if (aux.some((data) => data.id === findInfo.id)) {
-      setModuleTemp("");
+    if (statusGetById !== 200) {
+      console.error(errorCreate);
+      setToast({
+        show: true,
+        type: "error",
+        message: "Houve um erro no servidor, tente novamente mais tarde.",
+      });
       return;
     }
 
-    aux.push(findInfo);
-    setModulesSelected(aux);
-    setModuleTemp("");
-  }, [moduleTemp]);
+    setName(responseGetById.name);
+    setDescription(responseGetById.description);
+  }, [statusGetById]);
+
+  useEffect(() => {
+    if (!statusCreate) return;
+
+    if (statusCreate !== 201) {
+      console.error(errorCreate);
+      setToast({
+        show: true,
+        type: "error",
+        message: "Houve um erro no servidor, tente novamente mais tarde.",
+      });
+      return;
+    }
+
+    setName("");
+    setDescription("");
+
+    setToast({
+      show: true,
+      type: "success",
+      message: "Registro cadastrado com sucesso.",
+    });
+  }, [statusCreate]);
+
+  useEffect(() => {
+    if (!statusUpdate) return;
+
+    if (statusUpdate !== 200) {
+      console.error(errorUpdate);
+      setToast({
+        show: true,
+        type: "error",
+        message: "Houve um erro no servidor, tente novamente mais tarde.",
+      });
+      return;
+    }
+
+    setToast({
+      show: true,
+      type: "success",
+      message: "Registro atualizado com sucesso.",
+    });
+  }, [statusUpdate]);
+
+  useEffect(() => {
+    if (!statusDelete) return;
+
+    if (statusDelete !== 200) {
+      console.error(errorDelete);
+      setToast({
+        show: true,
+        type: "error",
+        message: "Houve um erro no servidor, tente novamente mais tarde.",
+      });
+      return;
+    }
+
+    setToast({
+      show: true,
+      type: "success",
+      message: "Registro deletado com sucesso.",
+    });
+
+    setTimeout(() => {
+      navigate("/tags/lista");
+    }, 3000);
+  }, [statusDelete]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!name || !description) return;
 
-    if (!name || !description || !modulesSelected.length) {
+    if (id) {
+      requestUpdate();
       return;
     }
 
-    requestRegister();
+    requestCreate();
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") return;
+
+    setToast({
+      ...toast,
+      show: false,
+    });
   };
 
   return (
@@ -117,34 +200,26 @@ function ModulesForm() {
                 />
               </Grid>
 
-              <Grid item xs={12} mt={2}>
-                <FormControl fullWidth variant="standard">
-                  <InputLabel id="modulesTemp">Módulos</InputLabel>
-                  <Select
-                    labelId="modulesTemp"
-                    id="modulesTemp"
-                    value={moduleTemp}
-                    label="Módulos"
-                    onChange={(e) => setModuleTemp(e.target.value)}
+              <Grid
+                item
+                xs={12}
+                mt={4}
+                display={"flex"}
+                justifyContent={"space-around"}
+              >
+                {id && (
+                  <Button
+                    onClick={() => requestDelete()}
+                    variant={"contained"}
+                    type={"button"}
+                    color={"error"}
                   >
-                    {modules.map((module) => (
-                      <MenuItem key={module.id} value={module.id}>
-                        {module.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
+                    Excluir
+                  </Button>
+                )}
 
-              <Grid item xs={12} mt={2}>
-                {modulesSelected.map((modSelected) => (
-                  <Chip key={modSelected.id} label={modSelected.name} />
-                ))}
-              </Grid>
-
-              <Grid item xs={12} mt={2} display={"flex"} justifyContent={"end"}>
                 <Button variant={"contained"} type={"submit"}>
-                  Cadastrar
+                  {id ? "Atualizar" : "Cadastrar"}
                 </Button>
               </Grid>
             </Grid>
@@ -152,6 +227,23 @@ function ModulesForm() {
         </Grid>
       </Grid>
 
+      <Snackbar
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        open={toast.show}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={toast?.type || "warning"}
+          sx={{ width: "100%" }}
+        >
+          {toast.message}
+        </Alert>
+      </Snackbar>
       <Footer />
     </div>
   );

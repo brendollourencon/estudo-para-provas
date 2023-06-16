@@ -15,6 +15,7 @@ Comandos:
         <div>migrations</div>
         <ul>
             <li>criar nova migration: typeorm migration:create ./src/migration/CreateModuleTable</li>
+            <li>rodar migrations: apenas rodar o servidor</li>
         </ul>
     </li>
 </ul>

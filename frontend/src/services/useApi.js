@@ -12,12 +12,12 @@ export const useApi = (prefix, method, headers, data) => {
 
   const request = async () => {
     try {
+      resetAttributes();
       const CancelToken = axios.CancelToken;
       const sourceToCancel = CancelToken.source();
 
       setSource(sourceToCancel);
       setLoading(true);
-
 
       console.info(
         `Nova requisição: ${method} ${url + prefix}`

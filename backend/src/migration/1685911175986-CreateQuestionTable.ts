@@ -45,23 +45,6 @@ export class CreateQuestionTable1685911175986 implements MigrationInterface {
     await queryRunner.addColumn(
       'questions',
       new TableColumn({
-        name: 'moduleId',
-        type: 'int',
-      }),
-    );
-
-    await queryRunner.createForeignKey(
-      'questions',
-      new TableForeignKey({
-        columnNames: ['moduleId'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'modules',
-      }),
-    );
-
-    await queryRunner.addColumn(
-      'questions',
-      new TableColumn({
         name: 'tagId',
         type: 'int',
       }),

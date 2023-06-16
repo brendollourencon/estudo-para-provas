@@ -6,7 +6,7 @@ import {
   TableForeignKey,
 } from 'typeorm';
 
-export class CreateModuleTagTable1685911653777 implements MigrationInterface {
+export class CreateModuleTagTable1686882446035 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -20,12 +20,8 @@ export class CreateModuleTagTable1685911653777 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'percentInModule',
-            type: 'varchar',
-          },
-          {
-            name: 'status',
-            type: 'boolean',
+            name: 'percentTag',
+            type: 'int',
           },
           {
             name: 'created_at',
@@ -62,9 +58,24 @@ export class CreateModuleTagTable1685911653777 implements MigrationInterface {
         referencedTableName: 'modules',
       }),
     );
+
+    await queryRunner.addColumn(
+      'modulesTags',
+      new TableColumn({
+        name: 'tagId',
+        type: 'int',
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'modulesTags',
+      new TableForeignKey({
+        columnNames: ['tagId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'tags',
+      }),
+    );
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('modulesTags');
-  }
+  public async down(queryRunner: QueryRunner): Promise<void> {}
 }

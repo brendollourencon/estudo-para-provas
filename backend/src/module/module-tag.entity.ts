@@ -5,25 +5,25 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-  OneToMany,
-  ManyToMany,
-  ManyToOne,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
-// import { Question } from "../question/question.entity";
 import { Tag } from '../tag/tag.entity';
-import { JoinTable } from 'typeorm/browser';
 import { Module } from './module.entity';
 
-@Entity()
+@Entity('modulesTags')
 export class ModuleTag {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  percentInModule: number;
+  moduleId: number;
 
   @Column()
-  status: boolean;
+  tagId: number;
+
+  @Column()
+  percentTag: string;
 
   @CreateDateColumn()
   created_at;
@@ -34,9 +34,11 @@ export class ModuleTag {
   @DeleteDateColumn()
   deleted_at;
 
-  @ManyToOne(() => Module, (module) => module.moduleTags)
+  @OneToOne(() => Module, (module) => module)
+  @JoinColumn()
   module: Module;
 
-  @ManyToOne(() => Tag, (tag) => tag.moduleTags)
+  @OneToOne(() => Tag, (tag) => tag)
+  @JoinColumn()
   tag: Tag;
 }

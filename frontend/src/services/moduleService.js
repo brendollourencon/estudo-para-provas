@@ -8,3 +8,7 @@ export const useGetAll = () => {
 export const useRegister = (data) => {
   return useApi(prefix, "POST", {}, data);
 };
+
+export const useGetById = (id) => {
+  return useApi(prefix + "/" + id, "GET", {}, {});
+};

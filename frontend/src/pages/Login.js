@@ -70,7 +70,11 @@ function Login() {
     if (!statusLogin) return;
 
     if (statusLogin === 200) {
-      auth.signIn(responseLogin.token, responseLogin.name, responseLogin.email);
+      auth.signIn(
+        responseLogin.access_token,
+        responseLogin.name,
+        responseLogin.email
+      );
       navigate("/");
       return;
     }

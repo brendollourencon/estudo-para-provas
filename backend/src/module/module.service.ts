@@ -9,10 +9,15 @@ export class ModuleService {
   constructor(
     @InjectRepository(Module)
     private modulesRepository: Repository<Module>,
+
   ) {}
 
   async getAll() {
     return this.modulesRepository.find();
+  }
+
+  async getById(id: string) {
+    return await this.modulesRepository.findOneBy({id: parseInt(id)})
   }
 
   async create(createModuleDTO: CreateModuleDto) {

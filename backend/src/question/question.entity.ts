@@ -1,43 +1,46 @@
 import {
-    Entity,
-    Column,
-    PrimaryGeneratedColumn,
-    CreateDateColumn,
-    UpdateDateColumn,
-    DeleteDateColumn,
-    ManyToOne, OneToMany
-} from "typeorm";
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 
-import { Module } from "../module/module.entity";
-import { Tag } from "../tag/tag.entity";
-import { Answers } from "../answers/answers.entity";
+import { Module } from '../module/module.entity';
+import { Tag } from '../tag/tag.entity';
+import { Answers } from '../answers/answers.entity';
+import { JoinColumn } from 'typeorm';
 
-@Entity()
+@Entity('questions')
 export class Question {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    description: string
+  @Column()
+  tagId: number;
 
-    @Column()
-    status: boolean
+  @Column()
+  description: string;
 
-    @CreateDateColumn()
-    created_at;
+  @CreateDateColumn()
+  created_at;
 
-    @UpdateDateColumn()
-    updated_at;
+  @UpdateDateColumn()
+  updated_at;
 
-    @DeleteDateColumn()
-    deleted_at;
+  @DeleteDateColumn()
+  deleted_at;
 
-    @ManyToOne(() => Module, (module) => module.questions)
-    module: Module;
+  @OneToMany(() => Answers, (answers) => answers.question)
+  answers: Answers;
 
-    @OneToMany(() => Answers, (answers) => answers.question)
-    answers: Answers
-
-    @OneToMany(() => Tag, (tag) => tag)
-    tag: Tag;
+  @OneToOne(() => Tag, (tag) => tag)
+  @JoinColumn()
+  tag: Tag;
 }

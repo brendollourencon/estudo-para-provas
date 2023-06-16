@@ -10,16 +10,19 @@ import {
 
 import { Question } from "../question/question.entity";
 
-@Entity()
+@Entity('answers')
 export class Answers {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
+    questionId: number
+
+    @Column()
     description: string
 
     @Column()
-    correct: string
+    correct: boolean
 
     @CreateDateColumn()
     created_at;

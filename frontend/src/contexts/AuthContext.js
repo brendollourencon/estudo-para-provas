@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { useLogin } from "../services/authService";
+import Cookies from "js-cookie";
 
 let AuthContext = React.createContext({
   user: null,
@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
   let [loading, setLoading] = React.useState(true);
 
   const init = () => {
-    if (!localStorage.getItem("token")) {
+    if (!Cookies.get("token")) {
       setIsAutenticated(false);
       return;
     }
@@ -31,13 +31,15 @@ export function AuthProvider({ children }) {
   }, []);
 
   const signIn = (newToken, name, email) => {
-    localStorage.setItem("token", newToken);
-    setUser({name, email})
+    Cookies.set("token", newToken, {
+      expires: new Date(new Date().getTime() + 60 * 60 * 1000),
+    });
+    setUser({ name, email });
     setIsAutenticated(true);
   };
 
   const signOut = () => {
-    localStorage.removeItem('token');
+    Cookies.remove("token");
   };
 
   return (
@@ -47,7 +49,7 @@ export function AuthProvider({ children }) {
         isAutenticated,
         loading,
         signIn,
-        signOut
+        signOut,
       }}
     >
       {children}

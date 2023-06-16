@@ -5,12 +5,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-  ManyToMany,
-  OneToMany,
 } from 'typeorm';
-import { ModuleTag } from '../module/moduleTag.entity';
 
-@Entity()
+@Entity('tags')
 export class Tag {
   @PrimaryGeneratedColumn()
   id: number;
@@ -29,7 +26,4 @@ export class Tag {
 
   @DeleteDateColumn()
   deleted_at;
-
-  @OneToMany(() => ModuleTag, (moduleTags) => moduleTags.tag)
-  moduleTags: ModuleTag[];
 }

@@ -5,10 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-  OneToMany,
 } from 'typeorm';
-import { Question } from '../question/question.entity';
-import { ModuleTag } from './moduleTag.entity';
 
 @Entity('modules')
 export class Module {
@@ -29,10 +26,4 @@ export class Module {
 
   @DeleteDateColumn()
   deleted_at;
-
-  @OneToMany(() => Question, (question) => question.module)
-  questions: Question[];
-
-  @OneToMany(() => ModuleTag, (moduleTags) => moduleTags.module)
-  moduleTags: ModuleTag[];
 }
