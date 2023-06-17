@@ -5,8 +5,12 @@ export const useGetAll = () => {
   return useApi(prefix, "GET", {}, {});
 };
 
-export const useRegister = (data) => {
+export const useCreate = (data) => {
   return useApi(prefix, "POST", {}, data);
+};
+
+export const useUpdate = (data) => {
+  return useApi(prefix, "PUT", {}, data);
 };
 
 export const useGetById = (id) => {

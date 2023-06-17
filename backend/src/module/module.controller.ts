@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from "@nestjs/common";
 import { ModuleService } from './module.service';
-import { CreateModuleDto } from './dtos/create-module.dto';
+import { CreateUpdateModuleDto } from './dtos/create-update-module.dto';
 
 @Controller('module')
 export class ModuleController {
@@ -16,7 +16,12 @@ export class ModuleController {
   }
 
   @Post()
-  async create(@Body() createModuleDto: CreateModuleDto) {
-    return this.moduleService.create(createModuleDto);
+  async create(@Body() createUpdateModuleDto: CreateUpdateModuleDto) {
+    return this.moduleService.create(createUpdateModuleDto);
+  }
+
+  @Put()
+  async update(@Body() createUpdateModuleDto: CreateUpdateModuleDto) {
+    return this.moduleService.update(createUpdateModuleDto);
   }
 }

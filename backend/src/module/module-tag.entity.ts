@@ -6,8 +6,8 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   OneToOne,
-  JoinColumn,
-} from 'typeorm';
+  JoinColumn, ManyToOne
+} from "typeorm";
 import { Tag } from '../tag/tag.entity';
 import { Module } from './module.entity';
 
@@ -23,7 +23,7 @@ export class ModuleTag {
   tagId: number;
 
   @Column()
-  percentTag: string;
+  percentTag: number;
 
   @CreateDateColumn()
   created_at;
@@ -34,8 +34,8 @@ export class ModuleTag {
   @DeleteDateColumn()
   deleted_at;
 
-  @OneToOne(() => Module, (module) => module)
-  @JoinColumn()
+  @ManyToOne(() => Module, (module) => module.moduleTags)
+
   module: Module;
 
   @OneToOne(() => Tag, (tag) => tag)
