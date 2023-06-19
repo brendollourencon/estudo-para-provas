@@ -1,10 +1,6 @@
 import { useApi } from "./useApi";
 
-const prefix = "/module";
-export const useGetAll = () => {
-  return useApi(prefix, "GET", {}, {});
-};
-
+const prefix = "/attemp-history";
 export const useCreate = (data) => {
   return useApi(prefix, "POST", {}, data);
 };
@@ -17,6 +13,6 @@ export const useGetById = (id) => {
   return useApi(prefix + "/" + id, "GET", {}, {});
 };
 
-export const useGetSimulate = (moduleId) => {
-  return useApi(prefix + "/simulate/" + moduleId, "GET", {}, {});
+export const useGetAll = (idModule) => {
+  return useApi(prefix, "GET", {}, { idModule });
 };

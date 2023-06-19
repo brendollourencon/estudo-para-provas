@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Module } from './module.entity';
-import { DataSource, Repository } from "typeorm";
+import { DataSource, Repository } from 'typeorm';
 import { CreateUpdateModuleDto } from './dtos/create-update-module.dto';
-import { ModuleTag } from "./module-tag.entity";
-import { CreateUpdateQuestionDto } from "../question/dtos/create-update-question.dto";
-import { Answers } from "../answers/answers.entity";
+import { ModuleTag } from './module-tag.entity';
+import { CreateUpdateQuestionDto } from '../question/dtos/create-update-question.dto';
+import { Answers } from '../answers/answers.entity';
+import { Question } from '../question/question.entity';
 
 @Injectable()
 export class ModuleService {
@@ -14,6 +15,9 @@ export class ModuleService {
     private moduleRepository: Repository<Module>,
     @InjectRepository(ModuleTag)
     private moduleTagRepository: Repository<ModuleTag>,
+
+    @InjectRepository(Question)
+    private questionRepository: Repository<Question>,
     private dataSource: DataSource,
   ) {}
 
@@ -26,7 +30,7 @@ export class ModuleService {
       .createQueryBuilder('m')
       .leftJoinAndSelect('m.moduleTags', 'mt')
       .leftJoinAndSelect('mt.tag', 't')
-      .where('m.id=:id', {id})
+      .where('m.id=:id', { id })
       .getOne();
   }
 
@@ -39,6 +43,7 @@ export class ModuleService {
       const module = new Module();
       module.name = createUpdateModuleDto.name;
       module.description = createUpdateModuleDto.description;
+      module.quantityQuestions = createUpdateModuleDto.quantityQuestions;
 
       const newModule = await queryRunner.manager.save(module);
 
@@ -55,6 +60,7 @@ export class ModuleService {
       return createUpdateModuleDto;
     } catch (err) {
       await queryRunner.rollbackTransaction();
+      throw err;
     } finally {
       await queryRunner.release();
     }
@@ -72,6 +78,7 @@ export class ModuleService {
 
       module.name = createUpdateModuleDto.name;
       module.description = createUpdateModuleDto.description;
+      module.quantityQuestions = createUpdateModuleDto.quantityQuestions;
 
       await queryRunner.manager.save(module);
 
@@ -96,5 +103,33 @@ export class ModuleService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async simulate(id: string) {
+    const module = await this.getById(id);
+    let questions = [];
+
+    for (let i = 0; i < module.moduleTags.length; i++) {
+      const moduleTag = module.moduleTags[i];
+      const qtyQuestionTag =
+        (moduleTag.percentTag * module.quantityQuestions) / 100;
+
+      let questionsTag = await this.questionRepository.find({
+        relations: {
+          answers: true,
+        },
+        where: {
+          tagId: moduleTag.tagId,
+        },
+        take: qtyQuestionTag,
+      });
+
+      questions = questions.concat(questionsTag);
+    }
+
+    return {
+      module,
+      questions,
+    };
   }
 }

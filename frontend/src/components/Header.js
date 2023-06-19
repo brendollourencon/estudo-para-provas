@@ -29,7 +29,7 @@ const pages = [
   },
   {
     name: "Simulados Realizados",
-    link: "/",
+    link: "/simulados-realizados/lista",
   },
 ];
 

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
+import Cookies from "js-cookie";
 
-const url = 'http://localhost:3001'
+const url = "http://localhost:3001";
 
 export const useApi = (prefix, method, headers, data) => {
   const [status, setStatus] = useState(null);
@@ -19,19 +20,18 @@ export const useApi = (prefix, method, headers, data) => {
       setSource(sourceToCancel);
       setLoading(true);
 
-      console.info(
-        `Nova requisição: ${method} ${url + prefix}`
-      );
+      console.info(`Nova requisição: ${method} ${url + prefix}`);
 
       if (process.env.REACT_APP_ENVIRONMENT === "development") {
-        console.info(
-          `Nova requisição: ${method} ${url + prefix}`
-        );
+        console.info(`Nova requisição: ${method} ${url + prefix}`);
       }
 
       const result = await axios({
         method,
-        headers,
+        headers: {
+          ...headers,
+          Authorization: "Bearer " + Cookies.get("token"),
+        },
         url: url + prefix,
         data,
         cancelToken: sourceToCancel.token,

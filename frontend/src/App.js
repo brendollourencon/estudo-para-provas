@@ -11,6 +11,9 @@ import TagsList from "./pages/admin/tags/TagsList";
 import TagsForm from "./pages/admin/tags/TagsForm";
 import QuestionsList from "./pages/admin/questions/QuestionsList";
 import QuestionsForm from "./pages/admin/questions/QuestionsForm";
+import AttempHistoryForm from "./pages/admin/attempHistory/AttempHistoryForm";
+import AttempHistoryList from "./pages/admin/attempHistory/AttempHistoryList";
+import SimulatedForm from "./pages/admin/attempHistory/SimulatedForm";
 
 function App() {
   const auth = useAuth();
@@ -102,6 +105,31 @@ function App() {
         element={
           <RequireAuth>
             <ModulesForm />
+          </RequireAuth>
+        }
+      />
+
+      <Route
+        path="/simulados-realizados/lista"
+        element={
+          <RequireAuth>
+            <AttempHistoryList />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="simulados-realizados/resultado/:id"
+        element={
+          <RequireAuth>
+            <AttempHistoryForm />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/simulado/modulo/:moduleId"
+        element={
+          <RequireAuth>
+            <SimulatedForm />
           </RequireAuth>
         }
       />

@@ -2,15 +2,15 @@ import {
   IsArray,
   IsNotEmpty,
   IsNumber,
-  IsObject, IsOptional,
-  IsString
-} from "class-validator";
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateUpdateModuleDto {
-
   @IsOptional()
   @IsString()
-  id: string
+  id: string;
 
   @IsString()
   @IsNotEmpty()
@@ -19,6 +19,10 @@ export class CreateUpdateModuleDto {
   @IsString()
   @IsNotEmpty()
   description: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  quantityQuestions: number;
 
   @IsArray()
   @IsNotEmpty()
@@ -29,8 +33,8 @@ class Tag {
   @IsObject()
   @IsNotEmpty()
   tag: {
-    id: number,
-    name: string
+    id: number;
+    name: string;
   };
 
   @IsNumber()

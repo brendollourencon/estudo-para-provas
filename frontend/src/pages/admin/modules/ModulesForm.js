@@ -28,6 +28,7 @@ function TagsForm() {
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [quantityQuestions, setQuantityQuestions] = useState("");
   const [tags, setTags] = useState([]);
   const [tagSelected, setTagSelected] = useState({
     tag: "",
@@ -46,14 +47,25 @@ function TagsForm() {
     response: responseCreate,
     request: requestCreate,
     loading: loadingCreate,
-  } = useCreate({ name, description, tags });
+  } = useCreate({
+    name,
+    description,
+    quantityQuestions: parseInt(quantityQuestions),
+    tags,
+  });
 
   const {
     status: statusUpdate,
     response: responseUpdate,
     request: requestUpdate,
     loading: loadingUpdate,
-  } = useUpdate({ id, name, description, tags });
+  } = useUpdate({
+    id,
+    name,
+    description,
+    quantityQuestions: parseInt(quantityQuestions),
+    tags,
+  });
 
   const {
     status: statusGetById,
@@ -71,9 +83,10 @@ function TagsForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!name || !description || !tags.length) {
+
+    if (!name || !description || !quantityQuestions || !tags.length) {
       setToast({
-        show: false,
+        show: true,
         type: "error",
         message: "Há campos requeridos inválidos",
       });
@@ -97,6 +110,41 @@ function TagsForm() {
     });
   };
 
+  const addTag = () => {
+    const exist = tags.find((t) => t.tag.id === tagSelected.tag.id);
+
+    if (exist) {
+      setTagSelected({
+        tag: "",
+        percent: "",
+      });
+      return;
+    }
+
+    if (!tagSelected.tag || !tagSelected.percent) return;
+
+    let qty = 0;
+    for (let i = 0; i < tags.length; i++) qty += parseInt(tags[i].percent);
+
+    qty += parseInt(tagSelected.percent);
+
+    if (qty > 100) {
+      setToast({
+        show: true,
+        type: "error",
+        message: "A porcentagem excederá os 100%",
+      });
+      return;
+    }
+
+    setTags((oldTag) => [...oldTag, tagSelected]);
+
+    setTagSelected({
+      tag: "",
+      percent: "",
+    });
+  };
+
   useEffect(() => {
     if (id) requestGetById();
     requestGetAllTags();
@@ -104,13 +152,16 @@ function TagsForm() {
 
   useEffect(() => {
     if (statusGetAllTags !== 200) return;
-    setTagsToSelect(responseGetAllTags)
-  },[statusGetAllTags])
+    setTagsToSelect(responseGetAllTags);
+  }, [statusGetAllTags]);
 
   useEffect(() => {
     if (statusGetById !== 200) return;
+
     setName(responseGetById.name);
     setDescription(responseGetById.description);
+    setQuantityQuestions(responseGetById.quantityQuestions);
+
     setTags(
       responseGetById.moduleTags.map((mt) => ({
         tag: mt.tag,
@@ -140,6 +191,7 @@ function TagsForm() {
 
     setName("");
     setDescription("");
+    setQuantityQuestions("");
     setTags([]);
     setTagsToSelect([]);
   }, [statusCreate]);
@@ -202,6 +254,17 @@ function TagsForm() {
                 />
               </Grid>
 
+              <Grid xs={12} mt={2} item>
+                <TextField
+                  value={quantityQuestions}
+                  id="quantityQuestions"
+                  label="Quantidade de Perguntas"
+                  variant="standard"
+                  fullWidth
+                  onChange={(e) => setQuantityQuestions(e.target.value)}
+                />
+              </Grid>
+
               <Grid container spacing={2}>
                 <Grid item xs={6} mt={2}>
                   <FormControl variant="standard" fullWidth>
@@ -237,12 +300,12 @@ function TagsForm() {
                     label="Porcentagem de perguntas"
                     variant="standard"
                     fullWidth
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setTagSelected({
                         ...tagSelected,
                         percent: e.target.value,
-                      })
-                    }
+                      });
+                    }}
                   />
                 </Grid>
 
@@ -256,28 +319,7 @@ function TagsForm() {
                   <Button
                     variant={"contained"}
                     type={"button"}
-                    onClick={() => {
-                      const exist = tags.find(
-                        (t) => t.tag.id === tagSelected.tag.id
-                      );
-
-                      if (exist) {
-                        setTagSelected({
-                          tag: "",
-                          percent: "",
-                        });
-                        return;
-                      }
-
-                      if (!tagSelected.tag || !tagSelected.percent) return;
-
-                      setTags((oldTag) => [...oldTag, tagSelected]);
-
-                      setTagSelected({
-                        tag: "",
-                        percent: "",
-                      });
-                    }}
+                    onClick={() => addTag()}
                   >
                     +
                   </Button>

@@ -9,6 +9,7 @@ import { TagModule } from './tag/tag.module';
 import { AnswersModule } from './answers/answers.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { AttempHistoryModule } from './attemp-history/attemp-history.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { AuthModule } from './auth/auth.module';
     TagModule,
     AnswersModule,
     AuthModule,
+    AttempHistoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -22,6 +22,10 @@ export class CreateModuleTable1685909215450 implements MigrationInterface {
             type: 'varchar',
           },
           {
+            name: 'quantityQuestions',
+            type: 'int',
+          },
+          {
             name: 'created_at',
             type: 'timestamp',
             default: 'now()',

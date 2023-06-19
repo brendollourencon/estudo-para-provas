@@ -6,11 +6,13 @@ import {
   TableForeignKey,
 } from 'typeorm';
 
-export class CreateModuleTagTable1686882446035 implements MigrationInterface {
+export class CreateAttemtHistoryQuestionsTable1687018941386
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'modulesTags',
+        name: 'attempHistoryQuestions',
         columns: [
           {
             name: 'id',
@@ -20,8 +22,12 @@ export class CreateModuleTagTable1686882446035 implements MigrationInterface {
             generationStrategy: 'increment',
           },
           {
-            name: 'percentTag',
-            type: 'int',
+            name: 'answersSelecteds',
+            type: 'json',
+          },
+          {
+            name: 'correct',
+            type: 'boolean',
           },
           {
             name: 'created_at',
@@ -43,41 +49,41 @@ export class CreateModuleTagTable1686882446035 implements MigrationInterface {
     );
 
     await queryRunner.addColumn(
-      'modulesTags',
+      'attempHistoryQuestions',
       new TableColumn({
-        name: 'moduleId',
+        name: 'attempHistoryId',
         type: 'int',
       }),
     );
 
     await queryRunner.createForeignKey(
-      'modulesTags',
+      'attempHistoryQuestions',
       new TableForeignKey({
-        columnNames: ['moduleId'],
+        columnNames: ['attempHistoryId'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'modules',
+        referencedTableName: 'attempHistory',
       }),
     );
 
     await queryRunner.addColumn(
-      'modulesTags',
+      'attempHistoryQuestions',
       new TableColumn({
-        name: 'tagId',
+        name: 'questionId',
         type: 'int',
       }),
     );
 
     await queryRunner.createForeignKey(
-      'modulesTags',
+      'attempHistoryQuestions',
       new TableForeignKey({
-        columnNames: ['tagId'],
+        columnNames: ['questionId'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'tags',
+        referencedTableName: 'questions',
       }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('modulesTags');
+    await queryRunner.dropTable('attempHistoryQuestions');
   }
 }

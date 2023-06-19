@@ -4,10 +4,13 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  DeleteDateColumn, OneToOne, JoinColumn, OneToMany
-} from "typeorm";
-import { Tag } from "../tag/tag.entity";
-import { ModuleTag } from "./module-tag.entity";
+  DeleteDateColumn,
+  OneToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
+import { Tag } from '../tag/tag.entity';
+import { ModuleTag } from './module-tag.entity';
 
 @Entity('modules')
 export class Module {
@@ -20,6 +23,9 @@ export class Module {
   @Column()
   description: string;
 
+  @Column()
+  quantityQuestions: number;
+
   @CreateDateColumn()
   created_at;
 
@@ -29,8 +35,6 @@ export class Module {
   @DeleteDateColumn()
   deleted_at;
 
-
   @OneToMany(() => ModuleTag, (moduleTags) => moduleTags.module)
-
-  moduleTags: ModuleTag;
+  moduleTags: ModuleTag[];
 }
