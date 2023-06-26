@@ -111,12 +111,13 @@ export class ModuleService {
 
     for (let i = 0; i < module.moduleTags.length; i++) {
       const moduleTag = module.moduleTags[i];
-      const qtyQuestionTag =
-        (moduleTag.percentTag * module.quantityQuestions) / 100;
+      let qtyQuestionTag = (moduleTag.percentTag * module.quantityQuestions) / 100;
+      qtyQuestionTag = parseInt(qtyQuestionTag.toFixed(2))
 
       let questionsTag = await this.questionRepository.find({
         relations: {
           answers: true,
+          tag: true
         },
         where: {
           tagId: moduleTag.tagId,

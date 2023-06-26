@@ -45,4 +45,9 @@ export class QuestionController {
   async delete(@Param('id') id: string) {
     return this.questionService.delete(id);
   }
+
+  @Get('/importar/arquivo')
+  async import(){
+    return this.questionService.import()
+  }
 }

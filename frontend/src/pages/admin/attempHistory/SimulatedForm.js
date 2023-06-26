@@ -70,7 +70,7 @@ function SimulatedForm() {
   useEffect(() => {
     if (statusGetSimulate !== 200) return;
     setModule(responseGetSimulate.module);
-    const questions = responseGetSimulate.questions.map((question) => {
+    let questions = responseGetSimulate.questions.map((question) => {
       let qntCorrect = 0;
 
       question.answers.map((answer) => {
@@ -81,7 +81,8 @@ function SimulatedForm() {
       return question;
     });
 
-    setQuestions(questions);
+    console.log(questions);
+    setQuestions(shuffle(questions));
   }, [statusGetSimulate]);
 
   useEffect(() => {
@@ -90,6 +91,21 @@ function SimulatedForm() {
     navigate(`/simulados-realizados/resultado/${responseCreate.id}`);
   }, [statusCreate]);
 
+  function shuffle(array) {
+    let m = array.length,
+      t,
+      i;
+
+    while (m) {
+      i = Math.floor(Math.random() * m--);
+      t = array[m];
+      array[m] = array[i];
+      array[i] = t;
+    }
+
+    return array;
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -97,9 +113,9 @@ function SimulatedForm() {
       setToast({
         show: true,
         type: "error",
-        message: `Ainda falta ${
+        message: `Ainda faltam ${
           questions.length - answeredQuestions.length
-        } perguntas sem responder`,
+        } perguntas para responder`,
       });
       return;
     }
@@ -177,13 +193,14 @@ function SimulatedForm() {
                       <Grid container>
                         <Grid item xs={12}>
                           <p>
+                            <strong>{question.tag.name}</strong> {" - "}
                             {question.description} (Selecione{" "}
                             {question.qtyToSelect})
                           </p>
                         </Grid>
 
                         <Grid item xs={12}>
-                          <ol>
+                          <ol type={"a"}>
                             {question.answers.map((answer) => (
                               <li key={answer.id}>
                                 <Checkbox

@@ -21,7 +21,7 @@ export class CreateQuestionTable1685911175986 implements MigrationInterface {
           },
           {
             name: 'description',
-            type: 'varchar',
+            type: 'text',
           },
           {
             name: 'created_at',

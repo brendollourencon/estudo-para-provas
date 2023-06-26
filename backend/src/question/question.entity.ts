@@ -25,7 +25,7 @@ export class Question {
   @Column()
   tagId: number;
 
-  @Column()
+  @Column('text')
   description: string;
 
   @CreateDateColumn()

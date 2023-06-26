@@ -5,6 +5,8 @@ import { Question } from './question.entity';
 import { CreateUpdateQuestionDto } from './dtos/create-update-question.dto';
 import { Answers } from '../answers/answers.entity';
 import { Module } from '../module/module.entity';
+import * as dadosProva1 from '../imports/prova1';
+import { Tag } from '../tag/tag.entity';
 
 @Injectable()
 export class QuestionService {
@@ -13,6 +15,10 @@ export class QuestionService {
     private questionRepository: Repository<Question>,
     @InjectRepository(Module)
     private moduleRepository: Repository<Module>,
+    @InjectRepository(Tag)
+    private tagRepository: Repository<Tag>,
+    @InjectRepository(Answers)
+    private answersRepository: Repository<Answers>,
     private dataSource: DataSource,
   ) {}
 
@@ -107,5 +113,39 @@ export class QuestionService {
 
   async delete(id: string) {
     return this.questionRepository.delete(parseInt(id));
+  }
+
+  async import() {
+    const { prova1 } = dadosProva1;
+
+    for (let i = 0; i < prova1.length; i++) {
+      console.log('Percorrendo pergunta ' + i + 1);
+      const dataQuestionquestion: any = prova1[i];
+      const tag = await this.tagRepository.findOneBy({
+        name: dataQuestionquestion.tag,
+      });
+
+      if (!tag) {
+        console.log(`Pergunta ${i + 1} ignorada, tag não encontrada`);
+        continue;
+      }
+
+      const question = await this.questionRepository.save({
+        description: dataQuestionquestion.description,
+        tagId: tag.id,
+      });
+
+      for (let j = 0; j < dataQuestionquestion.answers.length; j++) {
+        const awnswer: any = dataQuestionquestion.answers[j];
+
+        await this.answersRepository.save({
+          description: awnswer.description,
+          correct: awnswer.correct,
+          questionId: question.id
+        });
+      }
+    }
+
+    return 'Prova importada com sucesso!';
   }
 }
